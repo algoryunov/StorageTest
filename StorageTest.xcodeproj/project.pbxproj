@@ -93,21 +93,21 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		B22749E32338F46A00A49241 /* DataStorage Services */ = {
+		B22749E32338F46A00A49241 /* DataStorageServices */ = {
 			isa = PBXGroup;
 			children = (
 				B2627FA4234B7B250082A5E6 /* Sqlite */,
 				B2274A1B233E5CEF00A49241 /* Realm */,
-				B22749F5233A502800A49241 /* Core Data */,
+				B22749F5233A502800A49241 /* CoreData */,
 				B22749E52338F4A800A49241 /* DataStorageService.swift */,
 			);
-			path = "DataStorage Services";
+			path = DataStorageServices;
 			sourceTree = "<group>";
 		};
 		B22749EF2338F70D00A49241 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				B2274A18233E547000A49241 /* UI Utilities */,
+				B2274A18233E547000A49241 /* UIUtilities */,
 				B2A190DD2338C7A50040BB36 /* DataGenerator.swift */,
 				B2627F9B234B32D80082A5E6 /* CommonExtensions.swift */,
 				B2627F9F234B372A0082A5E6 /* ObjC.h */,
@@ -126,22 +126,22 @@
 			path = "Support Files";
 			sourceTree = "<group>";
 		};
-		B22749F5233A502800A49241 /* Core Data */ = {
+		B22749F5233A502800A49241 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
 				B22749ED2338F55100A49241 /* CoreDataDataStorage.swift */,
 				B2274A1E2344C6DF00A49241 /* CDOperationResult+CoreDataClass.swift */,
 				B2274A12233CB07600A49241 /* CDPerson+CoreDataClass.swift */,
 			);
-			path = "Core Data";
+			path = CoreData;
 			sourceTree = "<group>";
 		};
-		B2274A18233E547000A49241 /* UI Utilities */ = {
+		B2274A18233E547000A49241 /* UIUtilities */ = {
 			isa = PBXGroup;
 			children = (
 				B2274A19233E555C00A49241 /* ActivityIndicator.swift */,
 			);
-			path = "UI Utilities";
+			path = UIUtilities;
 			sourceTree = "<group>";
 		};
 		B2274A1B233E5CEF00A49241 /* Realm */ = {
@@ -184,7 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				B22749EF2338F70D00A49241 /* Utils */,
-				B22749E32338F46A00A49241 /* DataStorage Services */,
+				B22749E32338F46A00A49241 /* DataStorageServices */,
 				B2A190C82338C75E0040BB36 /* AppDelegate.swift */,
 				B2A190DF2338C7DF0040BB36 /* Models.swift */,
 				B2274A16233E43C900A49241 /* MainControllerViewModel.swift */,
@@ -489,7 +489,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "StorageTest/DataStorage Services/Utils/StorageTest-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "StorageTest/Utils/StorageTest-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -510,7 +510,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "StorageTest/DataStorage Services/Utils/StorageTest-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "StorageTest/Utils/StorageTest-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
