@@ -80,6 +80,7 @@ enum DatabaseOperationType: Int16, CaseIterable {
     case write = 1
     case clear = 2
     case readStatistic = 3
+    case indexing = 4
     
     var description : String {
         switch self {
@@ -87,6 +88,7 @@ enum DatabaseOperationType: Int16, CaseIterable {
         case .write:  return "Write"
         case .clear:  return "Clear"
         case .readStatistic: return "Read Statistic"
+        case .indexing: return "Indexing"
         }
     }
 }
@@ -106,10 +108,19 @@ class DataStorageOperationResult {
                 string = "\(string)\nError Occurred! \(error)"
             }
             else {
-                string = "\(string)\nDuration: \(self.duration.format(f: ".4"))\nResult: \(self.overallResult.description)\nMessage: \(self.message)"
+                string = "\(string)\nDuration: \(self.duration.format(f: ".4"))\nResult: \(self.overallResult.description)"
+
+                if message.count > 0 {
+                    string = "\(string)\nMessage: \(self.message)"
+                }
             }
             
             return string
         }
     }
+}
+
+struct DataStorageConfiguration {
+    var shouldUseTransactions = false
+    var isIndexed = false
 }

@@ -82,4 +82,27 @@ class MainControllerViewModel {
             }
         }
     }
+    
+    func handleTransactionSwitchStateChanged(_ newState: Bool, completion: @escaping UserActionCompletion) {
+        DispatchQueue.global(qos: .default).async {
+            let result = self.dataStorageService.changeIndexedState(newState)
+            DispatchQueue.main.async {
+                completion(result.description)
+            }
+        }
+
+    }
+    
+    func handleIndexSwitchStateChanged(_ newState: Bool, completion: @escaping UserActionCompletion) {
+        DispatchQueue.global(qos: .default).async {
+            let result = self.dataStorageService.changeIndexedState(newState)
+            DispatchQueue.main.async {
+                completion(result.description)
+            }
+        }
+    }
+
+    func isDatabaseIndexed() -> Bool {
+        return false
+    }
 }

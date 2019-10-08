@@ -23,6 +23,12 @@ class RealmDataStorage: DataStorageProtocol {
             return .realm
         }
     }
+
+    var isIndexed: Bool {
+        get {
+            return false
+        }
+    }
     
     func fetchCurrentEntitiesCount() -> Int {
         #warning("no 'count' query? really??")
@@ -30,7 +36,7 @@ class RealmDataStorage: DataStorageProtocol {
         return count
     }
 
-    func store(_ entities: [Person]) -> DataStorageOperationResult {
+    func store(_ entities: [Person], _ useTransactions: Bool) -> DataStorageOperationResult {
         let result = DataStorageOperationResult()
         do {
             try realm.write {
@@ -50,7 +56,7 @@ class RealmDataStorage: DataStorageProtocol {
         return result
     }
     
-    func search(_ filter: String) -> (DataStorageOperationResult, Array<Person>) {
+    func search(_ filter: String, _ useTransactions: Bool) -> (DataStorageOperationResult, Array<Person>) {
         let result = DataStorageOperationResult()
         var predicate = NSPredicate(format: "")
         var errorMessage: String?
@@ -133,6 +139,12 @@ class RealmDataStorage: DataStorageProtocol {
 
     func getAverageDurationOfOperation(withType type: DatabaseOperationType) -> Double {
         return self.realm.objects(RealmOperationResult.self).filter(NSPredicate(format: "operationType == \(type.rawValue)")).average(ofProperty: "duration") ?? 0.0
+    }
+    
+    // MARK: Other
+
+    func changeIndexedState(_ newState: Bool) -> DataStorageOperationResult {
+        return DataStorageOperationResult()
     }
 
 }

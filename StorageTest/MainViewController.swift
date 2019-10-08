@@ -14,7 +14,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var countTextField: UITextField!
     @IBOutlet weak var logTextView: UITextView!
     @IBOutlet weak var filterTextField: UITextField!
-    @IBOutlet weak var useTransactionsSwitch: UISwitch!
+    @IBOutlet weak var indexedSwitch: UISwitch!
     
     var viewModel: MainControllerViewModel!
  
@@ -30,6 +30,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         let indexPath = IndexPath(row: 0, section: 0)
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         viewModel = MainControllerViewModel(withStorageType: .coreData)
+        indexedSwitch.setOn(viewModel.isDatabaseIndexed(), animated: false)
     }
 
     // MARK: IBActions
@@ -83,7 +84,26 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             activityIndicator.hide()
         }
     }
+
+    @IBAction func transactionSwitchStateChanged(_ sender: UISwitch) {
+        let activityIndicator = ActivityIndicator(withMessage: "Enabling Transactions...")
+        activityIndicator.show(onView: self.view)
+        self.viewModel.handleTransactionSwitchStateChanged(sender.isOn) { [weak self] (logMessage) in
+            self?.log(logMessage)
+            activityIndicator.hide()
+        }
+    }
+
     
+    @IBAction func indexFieldsStateChanged(_ sender: UISwitch) {
+        let activityIndicator = ActivityIndicator(withMessage: "Indexing fields...")
+        activityIndicator.show(onView: self.view)
+        self.viewModel.handleIndexSwitchStateChanged(sender.isOn) { [weak self] (logMessage) in
+            self?.log(logMessage)
+            activityIndicator.hide()
+        }
+    }
+
     // MARK: Table View
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

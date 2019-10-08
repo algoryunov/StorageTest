@@ -16,13 +16,19 @@ class CoreDataDataStorage: DataStorageProtocol {
         }
     }
 
+    var isIndexed: Bool {
+        get {
+            return false
+        }
+    }
+
     func fetchCurrentEntitiesCount() -> Int {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "CDPerson")
         let count = try? self.persistentContainer.viewContext.count(for: request)
         return Int(count ?? 0)
     }
 
-    func store(_ entities: [Person]) -> DataStorageOperationResult {
+    func store(_ entities: [Person], _ useTransactions: Bool) -> DataStorageOperationResult {
         let result = DataStorageOperationResult()
         let context = self.persistentContainer.newBackgroundContext()
         for person in entities {
@@ -47,7 +53,7 @@ class CoreDataDataStorage: DataStorageProtocol {
         return result
     }
 
-    func search(_ filter: String) -> (DataStorageOperationResult, Array<Person>) {
+    func search(_ filter: String, _ useTransactions: Bool) -> (DataStorageOperationResult, Array<Person>) {
         // NOTE: I intentionnaly did not optimize the code inside of this method in order to show how
         // ugly looks wrapping Swift methods into both Swift do-catch and ObjC try-catch blocks
 
@@ -180,6 +186,12 @@ class CoreDataDataStorage: DataStorageProtocol {
         }
 
         return averageDuration
+    }
+    
+    // MARK: Other
+    
+    func changeIndexedState(_ newState: Bool) -> DataStorageOperationResult {
+        return DataStorageOperationResult()
     }
     
     

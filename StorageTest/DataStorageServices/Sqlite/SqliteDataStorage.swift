@@ -17,13 +17,19 @@ class SqliteDataStorage: DataStorageProtocol {
         }
     }
 
+    var isIndexed: Bool {
+        get {
+            return false
+        }
+    }
+
     func fetchCurrentEntitiesCount() -> Int {
         let persons = Table("persons")
         let count = try? self.connection?.scalar(persons.count)
         return count ?? 0
     }
   
-    func store(_ entities: [Person]) -> DataStorageOperationResult {
+    func store(_ entities: [Person], _ useTransactions: Bool) -> DataStorageOperationResult {
         let result = DataStorageOperationResult()
         guard let connection = self.connection else {
             result.overallResult = .failure
@@ -60,7 +66,7 @@ class SqliteDataStorage: DataStorageProtocol {
         return result
     }
     
-    func search(_ filter: String) -> (DataStorageOperationResult, Array<Person>) {
+    func search(_ filter: String, _ useTransactions: Bool) -> (DataStorageOperationResult, Array<Person>) {
         let result = DataStorageOperationResult()
         guard let connection = self.connection else {
             result.overallResult = .failure
@@ -157,6 +163,12 @@ class SqliteDataStorage: DataStorageProtocol {
         let duration = Expression<Double>("duration")
         let average = try? self.connection?.scalar(operations.select(duration.average))
         return average ?? 0.0
+    }
+    
+    // MARK: Other
+    
+    func changeIndexedState(_ newState: Bool) -> DataStorageOperationResult {
+        return DataStorageOperationResult()
     }
 
     // MARK: Private
