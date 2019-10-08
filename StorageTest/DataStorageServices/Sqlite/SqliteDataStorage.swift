@@ -37,13 +37,13 @@ class SqliteDataStorage: DataStorageProtocol {
             return result
         }
 
-        do {
+        let executeSearchClosure = {
             let persons = Table("persons")
             let id = Expression<Int64>("id")
             let firstName = Expression<String>("firstName")
             let lastName = Expression<String>("lastName")
             let birthDateTime = Expression<Double>("birthDateTime")
-
+            
             try connection.transaction {
                 for person in entities {
                     let insert = persons.insert(
@@ -54,9 +54,20 @@ class SqliteDataStorage: DataStorageProtocol {
                     let _ = try connection.run(insert)
                 }
             }
-
+            
             let newCount = self.fetchCurrentEntitiesCount()
             result.message = "New Entities Count: \(newCount)"
+        }
+        
+        do {
+            if useTransactions {
+                try connection.transaction {
+                    try executeSearchClosure()
+                }
+            }
+            else {
+                try executeSearchClosure()
+            }
         }
         catch {
             result.overallResult = .failure
@@ -66,7 +77,7 @@ class SqliteDataStorage: DataStorageProtocol {
         return result
     }
     
-    func search(_ filter: String, _ useTransactions: Bool) -> (DataStorageOperationResult, Array<Person>) {
+    func search(_ filter: String) -> (DataStorageOperationResult, Array<Person>) {
         let result = DataStorageOperationResult()
         guard let connection = self.connection else {
             result.overallResult = .failure
@@ -227,7 +238,7 @@ class SqliteDataStorage: DataStorageProtocol {
         let duration = Expression<Double>("duration")
         let message = Expression<String>("message")
         let operationType = Expression<Int64>("operationType")
-        let overallResult = Expression<Int64>("result")
+        let overallResult = Expression<Int64>("overallResult")
         try connection.run(operations.create { t in
             t.column(duration)
             t.column(message)

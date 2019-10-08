@@ -13,6 +13,7 @@ class ActivityIndicator: NSObject {
     let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
     var activityIndicator = UIActivityIndicatorView()
     var strLabel = UILabel()
+    var backView = UIView()
 
     var message = String()
 
@@ -43,7 +44,11 @@ class ActivityIndicator: NSObject {
 
         effectView.contentView.addSubview(activityIndicator)
         effectView.contentView.addSubview(strLabel)
-        view.addSubview(effectView)
+        
+        backView = UIView()
+        backView.frame = UIScreen.main.bounds
+        backView.addSubview(effectView)
+        view.addSubview(backView)
     }
 
     func updateText(_ newText: String) {
@@ -55,6 +60,7 @@ class ActivityIndicator: NSObject {
         strLabel.removeFromSuperview()
         activityIndicator.removeFromSuperview()
         effectView.removeFromSuperview()
+        backView.removeFromSuperview()
     }
 
 }

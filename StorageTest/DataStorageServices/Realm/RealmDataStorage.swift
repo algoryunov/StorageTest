@@ -31,7 +31,6 @@ class RealmDataStorage: DataStorageProtocol {
     }
     
     func fetchCurrentEntitiesCount() -> Int {
-        #warning("no 'count' query? really??")
         let count = self.realm.objects(RealmPerson.self).count
         return count
     }
@@ -56,9 +55,9 @@ class RealmDataStorage: DataStorageProtocol {
         return result
     }
     
-    func search(_ filter: String, _ useTransactions: Bool) -> (DataStorageOperationResult, Array<Person>) {
+    func search(_ filter: String) -> (DataStorageOperationResult, Array<Person>) {
         let result = DataStorageOperationResult()
-        var predicate = NSPredicate(format: "")
+        var predicate: NSPredicate?
         var errorMessage: String?
         if filter.count > 0 {
             ObjC.try({
@@ -73,8 +72,12 @@ class RealmDataStorage: DataStorageProtocol {
             result.errorMessage = errorMessage
             return (result, [])
         }
-        
-        let realmObjects = self.realm.objects(RealmPerson.self).filter(predicate)
+
+        var realmObjects = self.realm.objects(RealmPerson.self)
+        if let predicate = predicate {
+            realmObjects = realmObjects.filter(predicate) // realm docs says I can do this is *this* way
+        }
+
         var persons = [Person]()
         for realmPerson in realmObjects {
             persons.append(realmPerson.convertToPerson())
@@ -113,7 +116,7 @@ class RealmDataStorage: DataStorageProtocol {
     func getSearchQueryHelp() -> String {
         return """
         Field names: id (Int), firstName (String), lastName (String), birthDateTime (Double)
-        Examples of search:
+        NSPredicate-compatible contructions can be used as a filter. Examples of search:
         firstName == Smith
         (lastName CONTAINS[cd] 'mi') OR (firstName LIKE 'mi%') // [cd] stands for "Case & Diacritic insensitive"
         birthDateTime > 12345

@@ -41,15 +41,14 @@ class MainControllerViewModel {
     func handleSearchTapped(_ filter: String?, completion: @escaping UserActionCompletion) {
         DispatchQueue.global(qos: .default).async {
             let (result, array) = self.dataStorageService.search(filter ?? "")
-            let finalIndex = array.count > 10 ? 10 : array.count;
-            let personsToPrint = array[0...finalIndex].map({ person in
-                return "\(person.firstName) \(person.lastName)"
-            })
-            let message = """
-                          \(result.description)
-                          Found enitites: \(array.count)
-                          First 10 entities: \n\(personsToPrint.joined(separator: "\n"))
-                          """
+            var message = "\(result.description)\nFound enitites: \(array.count)"
+            if array.count > 0 {
+                let finalIndex = array.count > 10 ? 10 : array.count
+                let personsToPrint = array[0...finalIndex].map({ person in
+                    return "\(person.firstName) \(person.lastName)"
+                })
+                message = "\(message)\nFirst \(finalIndex) persons: \n\(personsToPrint.joined(separator: "\n"))"
+            }
             DispatchQueue.main.async {
                 completion(message)
             }
@@ -85,12 +84,11 @@ class MainControllerViewModel {
     
     func handleTransactionSwitchStateChanged(_ newState: Bool, completion: @escaping UserActionCompletion) {
         DispatchQueue.global(qos: .default).async {
-            let result = self.dataStorageService.changeIndexedState(newState)
+            let result = self.dataStorageService.changeUseTransactionState(newState)
             DispatchQueue.main.async {
                 completion(result.description)
             }
         }
-
     }
     
     func handleIndexSwitchStateChanged(_ newState: Bool, completion: @escaping UserActionCompletion) {
@@ -100,6 +98,12 @@ class MainControllerViewModel {
                 completion(result.description)
             }
         }
+    }
+    
+    func getHelpText() -> String {
+        let path = Bundle.main.path(forResource: "help", ofType: "txt")!
+        let helpString = try? String(contentsOfFile: path)
+        return helpString ?? ""
     }
 
     func isDatabaseIndexed() -> Bool {

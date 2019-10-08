@@ -121,6 +121,6 @@ class DataStorageOperationResult {
 }
 
 struct DataStorageConfiguration {
-    var shouldUseTransactions = false
+    var shouldUseTransactionsForWriting = false
     var isIndexed = false
 }

@@ -53,7 +53,7 @@ class CoreDataDataStorage: DataStorageProtocol {
         return result
     }
 
-    func search(_ filter: String, _ useTransactions: Bool) -> (DataStorageOperationResult, Array<Person>) {
+    func search(_ filter: String) -> (DataStorageOperationResult, Array<Person>) {
         // NOTE: I intentionnaly did not optimize the code inside of this method in order to show how
         // ugly looks wrapping Swift methods into both Swift do-catch and ObjC try-catch blocks
 
@@ -134,7 +134,7 @@ class CoreDataDataStorage: DataStorageProtocol {
     func getSearchQueryHelp() -> String {
         return """
         Field names: id (Int), firstName (String), lastName (String), birthDateTime (Double)
-        Examples of search:
+        NSPredicate-compatible contructions can be used as a filter. Examples of search:
         firstName == Smith
         (lastName CONTAINS[cd] 'mi') OR (firstName LIKE 'mi%') // [cd] stands for "Case & Diacritic insensitive"
         birthDateTime > 12345
@@ -193,8 +193,7 @@ class CoreDataDataStorage: DataStorageProtocol {
     func changeIndexedState(_ newState: Bool) -> DataStorageOperationResult {
         return DataStorageOperationResult()
     }
-    
-    
+
     // MARK: Private
 
     func clear(_ table: String) throws {
@@ -203,9 +202,8 @@ class CoreDataDataStorage: DataStorageProtocol {
         let _ = try context.execute(request)
     }
 
-    
     // MARK: - Core Data stack
-    
+
     lazy var persistentContainer: NSPersistentContainer = {
         /*
          The persistent container for the application. This implementation

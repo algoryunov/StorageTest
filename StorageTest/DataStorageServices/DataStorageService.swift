@@ -27,7 +27,7 @@ protocol DataStorageProtocol {
     
     func fetchCurrentEntitiesCount() -> Int
     func store(_ entities: [Person], _ useTransactions: Bool) -> DataStorageOperationResult
-    func search(_ filter: String, _ useTransactions: Bool) -> (DataStorageOperationResult, Array<Person>)
+    func search(_ filter: String) -> (DataStorageOperationResult, Array<Person>)
     func clearAll() -> DataStorageOperationResult
     func storeOperationResult(_ result: DataStorageOperationResult)
     func getSearchQueryHelp() -> String
@@ -55,6 +55,9 @@ class DataStorageServiceProvider: DataStorageServiceProviderProtocol {
     
     func changeStorage(to type: DatabaseType) {
         self.currentStorage = DataStorageServiceProvider.getStorage(withType: type)
+        if type == .realm || type == .coreData {
+            self.configuration.shouldUseTransactionsForWriting = true
+        }
     }
 
     // MARK: DataStorageServiceProtocol
@@ -69,7 +72,7 @@ class DataStorageServiceProvider: DataStorageServiceProviderProtocol {
     
     func store(_ entities: [Person]) -> DataStorageOperationResult {
         let startTimestamp = Date.init().timeIntervalSince1970
-        let result = self.currentStorage.store(entities, self.configuration.shouldUseTransactions)
+        let result = self.currentStorage.store(entities, self.configuration.shouldUseTransactionsForWriting)
         result.storageType = self.currentStorage.type
         result.operationType = .write
         result.duration = Date.init().timeIntervalSince1970 - startTimestamp
@@ -81,7 +84,7 @@ class DataStorageServiceProvider: DataStorageServiceProviderProtocol {
     
     func search(_ filter: String) -> (DataStorageOperationResult, Array<Person>) {
         let startTimestamp = Date.init().timeIntervalSince1970
-        let (result, array) = self.currentStorage.search(filter, self.configuration.shouldUseTransactions)
+        let (result, array) = self.currentStorage.search(filter)
         result.storageType = self.currentStorage.type
         result.operationType = .read
         result.duration = Date.init().timeIntervalSince1970 - startTimestamp
@@ -120,8 +123,19 @@ class DataStorageServiceProvider: DataStorageServiceProviderProtocol {
     
     func changeUseTransactionState(_ newState: Bool) -> DataStorageOperationResult {
         let result = DataStorageOperationResult()
-        result.message = newState ? "State is changed - App will start using transactions" : "State is changed - App will stop using transactions"
-        self.configuration.shouldUseTransactions = newState
+
+        switch self.currentStorageType {
+        case .realm:
+            result.message = "Realm uses transactions for writing operations by default"
+            self.configuration.shouldUseTransactionsForWriting = true
+        case .coreData:
+            result.message = "Core Data uses transactions for writing operations by default"
+            self.configuration.shouldUseTransactionsForWriting = true
+        case .sqlite:
+            result.message = newState ? "State is changed - App will start using transactions" : "State is changed - App will stop using transactions"
+            self.configuration.shouldUseTransactionsForWriting = newState
+        }
+
         return result
     }
     

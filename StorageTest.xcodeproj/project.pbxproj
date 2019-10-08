@@ -21,6 +21,7 @@
 		B2627F9C234B32D80082A5E6 /* CommonExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2627F9B234B32D80082A5E6 /* CommonExtensions.swift */; };
 		B2627FA1234B372A0082A5E6 /* ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = B2627FA0234B372A0082A5E6 /* ObjC.m */; };
 		B2627FA3234B735A0082A5E6 /* RealmOperationResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2627FA2234B735A0082A5E6 /* RealmOperationResult.swift */; };
+		B2627FA8234CD53D0082A5E6 /* help.txt in Resources */ = {isa = PBXBuildFile; fileRef = B2627FA7234CD53D0082A5E6 /* help.txt */; };
 		B2A190C92338C75E0040BB36 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A190C82338C75E0040BB36 /* AppDelegate.swift */; };
 		B2A190CB2338C75E0040BB36 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A190CA2338C75E0040BB36 /* MainViewController.swift */; };
 		B2A190CE2338C75E0040BB36 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2A190CC2338C75E0040BB36 /* Main.storyboard */; };
@@ -52,6 +53,7 @@
 		B2627F9F234B372A0082A5E6 /* ObjC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjC.h; sourceTree = "<group>"; };
 		B2627FA0234B372A0082A5E6 /* ObjC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ObjC.m; sourceTree = "<group>"; };
 		B2627FA2234B735A0082A5E6 /* RealmOperationResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmOperationResult.swift; sourceTree = "<group>"; };
+		B2627FA7234CD53D0082A5E6 /* help.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = help.txt; sourceTree = "<group>"; };
 		B2A190C52338C75E0040BB36 /* StorageTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StorageTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A190C82338C75E0040BB36 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B2A190CA2338C75E0040BB36 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 		B22749F42339FCDF00A49241 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
+				B2627FA7234CD53D0082A5E6 /* help.txt */,
 				B22749F0233903D100A49241 /* first-names.json */,
 				B22749F1233903D100A49241 /* last-names.json */,
 			);
@@ -261,6 +264,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B2A190D62338C75E0040BB36 /* LaunchScreen.storyboard in Resources */,
+				B2627FA8234CD53D0082A5E6 /* help.txt in Resources */,
 				B22749F2233903D100A49241 /* first-names.json in Resources */,
 				B2A190D32338C75E0040BB36 /* Assets.xcassets in Resources */,
 				B2A190CE2338C75E0040BB36 /* Main.storyboard in Resources */,
@@ -488,6 +492,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexeyg.storagetest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "StorageTest/Utils/StorageTest-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -509,6 +514,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.alexeyg.storagetest;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "StorageTest/Utils/StorageTest-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

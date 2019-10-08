@@ -15,6 +15,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var logTextView: UITextView!
     @IBOutlet weak var filterTextField: UITextField!
     @IBOutlet weak var indexedSwitch: UISwitch!
+    @IBOutlet weak var useTransactionsSwitch: UISwitch!
     
     var viewModel: MainControllerViewModel!
  
@@ -94,7 +95,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
 
-    
     @IBAction func indexFieldsStateChanged(_ sender: UISwitch) {
         let activityIndicator = ActivityIndicator(withMessage: "Indexing fields...")
         activityIndicator.show(onView: self.view)
@@ -102,6 +102,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             self?.log(logMessage)
             activityIndicator.hide()
         }
+    }
+
+    @IBAction func helpTapped(_ sender: Any) {
+        let helpText = self.viewModel.getHelpText()
+        self.log(helpText)
     }
 
     // MARK: Table View
@@ -121,6 +126,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let type = self.indexPathToStorageType(indexPath)
         self.viewModel.storageTypeChanged(to: type)
+        updateUseTransactionsFieldWithNewStorageType(type)
     }
 
     // MARK: Utils
@@ -130,7 +136,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func log(_ message: String) {
-        self.logTextView.text.append("\n\n>> \(message)")
+        self.logTextView.text.append(">> \(message)\n\n")
         let bottom = NSMakeRange(logTextView.text.count - 1, 1)
         logTextView.scrollRangeToVisible(bottom)
     }
@@ -147,5 +153,14 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         return type
     }
     
+    func updateUseTransactionsFieldWithNewStorageType(_ type: DatabaseType) {
+        if type == .realm || type == .coreData {
+            self.useTransactionsSwitch.setOn(true, animated: false)
+            self.useTransactionsSwitch.isEnabled = false
+        }
+        else {
+            self.useTransactionsSwitch.isEnabled = true
+        }
+    }
 }
 
