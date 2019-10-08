@@ -14,6 +14,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var countTextField: UITextField!
     @IBOutlet weak var logTextView: UITextView!
     @IBOutlet weak var filterTextField: UITextField!
+    @IBOutlet weak var useTransactionsSwitch: UISwitch!
     
     var viewModel: MainControllerViewModel!
  

@@ -41,7 +41,15 @@ class MainControllerViewModel {
     func handleSearchTapped(_ filter: String?, completion: @escaping UserActionCompletion) {
         DispatchQueue.global(qos: .default).async {
             let (result, array) = self.dataStorageService.search(filter ?? "")
-            let message = "\(array.count) entities found\n\(result.description)"
+            let finalIndex = array.count > 10 ? 10 : array.count;
+            let personsToPrint = array[0...finalIndex].map({ person in
+                return "\(person.firstName) \(person.lastName)"
+            })
+            let message = """
+                          \(result.description)
+                          Found enitites: \(array.count)
+                          First 10 entities: \n\(personsToPrint.joined(separator: "\n"))
+                          """
             DispatchQueue.main.async {
                 completion(message)
             }

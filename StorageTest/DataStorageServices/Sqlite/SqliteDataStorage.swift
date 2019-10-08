@@ -38,13 +38,15 @@ class SqliteDataStorage: DataStorageProtocol {
             let lastName = Expression<String>("lastName")
             let birthDateTime = Expression<Double>("birthDateTime")
 
-            for person in entities {
-                let insert = persons.insert(
-                    id            <- Int64(person.id),
-                    firstName     <- person.firstName,
-                    lastName      <- person.lastName,
-                    birthDateTime <- person.birthDateTime)
-                let _ = try connection.run(insert)
+            try connection.transaction {
+                for person in entities {
+                    let insert = persons.insert(
+                        id            <- Int64(person.id),
+                        firstName     <- person.firstName,
+                        lastName      <- person.lastName,
+                        birthDateTime <- person.birthDateTime)
+                    let _ = try connection.run(insert)
+                }
             }
 
             let newCount = self.fetchCurrentEntitiesCount()
@@ -75,14 +77,12 @@ class SqliteDataStorage: DataStorageProtocol {
         do {
             let stmt = try connection.prepare(query)
             for row in stmt {
-                for (index, name) in stmt.columnNames.enumerated() {
-                    let person = Person()
-
-//                    person.firstName = row[]
-                    print ("\(name):\(row[index]!)")
-                    // id: Optional(1), email: Optional("alice@mac.com")
-                    persons.append(person)
-                }
+                let person = Person()
+                person.id = row[0] as? Int32 ?? 0
+                person.firstName = row[1] as? String  ?? "John"
+                person.lastName = row[2] as? String ?? "Doe"
+                person.birthDateTime = row[3] as? Double ?? 123.0
+                persons.append(person)
             }
         }
         catch {
@@ -122,14 +122,13 @@ class SqliteDataStorage: DataStorageProtocol {
             let duration = Expression<Double>("duration")
             let message = Expression<String>("message")
             let operationType = Expression<Int64>("operationType")
-            let result = Expression<Bool>("result")
-
+            let overallResult = Expression<Int64>("overallResult")
                 let insert = operations.insert(
                     duration      <- result.duration,
                     message       <- result.message,
-                    operationType <- result.operationType,
-                    result        <- result.result)
-                let _ = try connection.run(insert)
+                    operationType <- Int64(result.operationType.rawValue),
+                    overallResult <- Int64(result.overallResult == .success ? 1 : 0))
+                let _ = try self.connection?.run(insert)
         }
         catch {
             print("save failed")
@@ -137,21 +136,27 @@ class SqliteDataStorage: DataStorageProtocol {
     }
     
     func getSearchQueryHelp() -> String {
-        return ""
+        return "firstName like '%mi%'"
     }
     
     // MARK: Statistic
 
     func getDatabaseFilePaths() -> [URL] {
-        return []
+        let url = URL(fileURLWithPath: SqliteDataStorage.pathToDatabase)
+        return [ url ]
     }
     
     func getNumberOfOperations(withType type: DatabaseOperationType) -> Int {
-        return 0
+        let operations = Table("operations")
+        let count = try? self.connection?.scalar(operations.count)
+        return count ?? 0
     }
     
     func getAverageDurationOfOperation(withType type: DatabaseOperationType) -> Double {
-        return 0.0
+        let operations = Table("operations")
+        let duration = Expression<Double>("duration")
+        let average = try? self.connection?.scalar(operations.select(duration.average))
+        return average ?? 0.0
     }
 
     // MARK: Private
@@ -210,12 +215,12 @@ class SqliteDataStorage: DataStorageProtocol {
         let duration = Expression<Double>("duration")
         let message = Expression<String>("message")
         let operationType = Expression<Int64>("operationType")
-        let result = Expression<Int64>("result")
+        let overallResult = Expression<Int64>("result")
         try connection.run(operations.create { t in
             t.column(duration)
             t.column(message)
             t.column(operationType)
-            t.column(result)
+            t.column(overallResult)
         })
     }
 }
